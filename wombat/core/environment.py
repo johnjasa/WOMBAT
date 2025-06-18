@@ -762,7 +762,7 @@ class WombatEnvironment(simpy.Environment):
         """
         if self.events_log_fname.suffix == ".pqt":
             return pd.read_parquet(self.events_log_fname)
-
+        
         log_df = (
             pd.read_csv(
                 self.events_log_fname,
