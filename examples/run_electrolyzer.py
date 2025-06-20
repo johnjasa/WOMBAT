@@ -1,10 +1,8 @@
-from time import perf_counter  # timing purposes only
-
 import numpy as np
 import pandas as pd
 
 from wombat import Simulation
-from wombat.core.library import load_yaml, DINWOODIE
+from wombat.core.library import load_yaml
 from pathlib import Path
 
 
@@ -25,16 +23,16 @@ sim = Simulation(
     library_path=library_folder,  # automatically directs to the provided library
     config=config,
 )
-sim.env.cleanup_log_files()
-
-
-
-# Timing for a demonstration of performance
-start = perf_counter()
 
 sim.run(delete_logs=True, save_metrics_inputs=False)
 
-end = perf_counter()
+net_cf = sim.metrics.capacity_factor(
+    which="net", frequency="project", by="windfarm"
+).values[0][0]
+gross_cf = sim.metrics.capacity_factor(
+    which="gross", frequency="project", by="windfarm"
+).values[0][0]
+print(f"  Net Capacity Factor: {net_cf:2.1%}")
+print(f"Gross Capacity Factor: {gross_cf:2.1%}")
 
-timing = end - start
-print(f"Run time: {timing / 60:,.2f} minutes")
+print(sim.metrics.opex("annual"))
